@@ -1,11 +1,17 @@
 const express = require('express');
-const userController = require('../controllers/librosController');
+const librosController = require('../controllers/librosControllers');
 const router = express.Router();
-router.get('/', userController.getUsers);
-router.get('/:userId', userController.getUser);
-router.post('/', userController.createUser);
-router.put('/:userId', userController.replaceUser);
-router.patch('/:userId', userController.editUser);
-router.delete('/:userId', userController.deleteUser);
+router.get('/libro/titulo/:titulo', librosController.getLibrosTitulo);
+router.get('/libro/autor/:autor', librosController.getLibrosAutor);
+router.get('/libro/ISBN/:ISBN', librosController.getLibrosISBN);
+router.get('/libro/fecha/:fechapublicacion', librosController.getLibrosFecha);
+router.get('/libro/descripcion/:descripcion', librosController.getLibrosDescripcion);
+router.get('/libro/editorial/:editorial', librosController.getLibrosEditorial);
+router.get('/libro/precio/:precio', librosController.getLibrosPrecio);
+router.get('/:userId', librosController.getLibro);
+router.post('/', librosController.createLibro);
+router.put('/:userId', librosController.replaceLibro);
+router.patch('/:userId', librosController.editLibro);
+router.delete('/:userId', librosController.deleteLibro);
 
 module.exports = router;
