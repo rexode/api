@@ -8,10 +8,10 @@ router.get('/libro/fecha/:fechapublicacion', librosController.getLibrosFecha);
 router.get('/libro/descripcion/:descripcion', librosController.getLibrosDescripcion);
 router.get('/libro/editorial/:editorial', librosController.getLibrosEditorial);
 router.get('/libro/precio/:precio', librosController.getLibrosPrecio);
-router.get('/:userId', librosController.getLibro);
+router.get('/:bookId', librosController.getLibro);
 router.post('/', librosController.createLibro);
-router.put('/:userId', librosController.replaceLibro);
-router.patch('/:userId', librosController.editLibro);
-router.delete('/:userId', librosController.deleteLibro);
+router.put('/:bookId', librosController.replaceLibro);
+router.patch('/:bookId', librosController.editLibro);
+router.delete('/:bookId', librosController.deleteLibro);
 
 module.exports = router;
