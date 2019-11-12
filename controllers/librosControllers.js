@@ -150,7 +150,7 @@ module.exports = {
     getLibroAutor,
     getLibroISBN,
     getLibroFecha,
-    GetLibroDescripcion,
+    getLibroDescripcion,
     getLibroEditorial,
     getLibroPrecio,
     getLibro,

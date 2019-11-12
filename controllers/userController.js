@@ -1,10 +1,8 @@
-/* eslint-disable consistent-return */
-
 const User = require('../models/usuarios');
+const bcrypt = require('bcrypt');
+const rondascifrado = 8;
 
-// Get user object
 function getUsers(req, res) {
-    // Finds all users in the database
     User.find({}, (error, users) => {
         if (error) return res.status(500).send({ error });
 
@@ -12,7 +10,6 @@ function getUsers(req, res) {
     });
 }
 
-// Get user object by ID
 function getUser(req, res) {
     const { userId } = req.params;
 
@@ -45,6 +42,9 @@ function replaceUser(req, res) {
     const { nombre } = req.body;
     const { apellido } = req.body;
     const { alias } = req.body;
+    bcrypt.genSalt(rondascifrado, function(err, salt) {
+        bcrypt.hash(contraseña, salt, function(err, hash) {});
+    });
 
     if (!email || !nombre || !apellido || !contraseña || !alias) {
         return res.status(400).send({ message: 'Missing params' });
@@ -94,7 +94,9 @@ function login(req, res) {
     const { email } = req.params;
     const { contraseña } = req.body;
 
-    // Find the user and check if the password is correct
+    bcrypt.genSalt(rondascifrado, function(err, salt) {
+        bcrypt.hash(contraseña, salt, function(err, hash) {});
+    });
     User.findOne({ email }, (err, user) => {
         if (err) return res.status(500).send({ err });
         if (!user) return res.status(404).send({ message: 'No user found' });
