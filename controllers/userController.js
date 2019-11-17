@@ -1,31 +1,10 @@
-const User = require('../models/usuarios');
-const bcrypt = require('bcrypt');
-const rondascifrado = 8;
-const app = require('./app');
-const express = require('express'),
-    bodyParser = require('body-parser'),
-    jwt = require('jsonwebtoken'),
-    config = require('./middleware/middleware'),
-    app = express();
+/* eslint-disable consistent-return */
 
-app.set('llave', config.llave);
+const User = require('../models/user');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(bodyParser.json());
-
-app.listen(3000, () => {
-    console.log('Servidor iniciado en el puerto 3000')
-});
-
-app.get('/', function(req, res) {
-    res.send('Inicio');
-});
-
-
-
-
+// Get user object
 function getUsers(req, res) {
+    // Finds all users in the database
     User.find({}, (error, users) => {
         if (error) return res.status(500).send({ error });
 
@@ -33,6 +12,7 @@ function getUsers(req, res) {
     });
 }
 
+// Get user object by ID
 function getUser(req, res) {
     const { userId } = req.params;
 
@@ -61,15 +41,11 @@ function createUser(req, res) {
 function replaceUser(req, res) {
     const { userId } = req.params;
     const { email } = req.body;
-    const { contraseña } = req.body;
+    const { contrasena } = req.body;
     const { nombre } = req.body;
     const { apellido } = req.body;
-    const { alias } = req.body;
-    bcrypt.genSalt(rondascifrado, function(err, salt) {
-        bcrypt.hash(contraseña, salt, function(err, hash) {});
-    });
 
-    if (!email || !nombre || !apellido || !contraseña || !alias) {
+    if (!email || !nombre || !apellido || !contrasena) {
         return res.status(400).send({ message: 'Missing params' });
     }
 
@@ -115,55 +91,18 @@ function deleteUser(req, res) {
 // Validate the information to log in
 function login(req, res) {
     const { email } = req.params;
-    const { contraseña } = req.body;
+    const { contrasena } = req.body;
 
-    bcrypt.genSalt(rondascifrado, function(err, salt) {
-        bcrypt.hash(contraseña, salt, function(err, hash) {});
-    });
+    // Find the user and check if the password is correct
     User.findOne({ email }, (err, user) => {
         if (err) return res.status(500).send({ err });
         if (!user) return res.status(404).send({ message: 'No user found' });
 
-        if (contraseña !== user.contraseña) return res.status(401).send({ message: 'Incorrect password' });
+        if (contrasena !== user.contrasena) return res.status(401).send({ message: 'Incorrect password' });
 
         return res.status(200).send({ message: 'Correct password' });
     });
-    app.post('/autenticar', (req, res) => {
-        if (contraseña === user.contraseña && email === user.email) {
-            const payload = {
-                check: true
-            };
-            const token = jwt.sign(payload, app.get('llave'), {
-                expiresIn: 1440
-            });
-            res.json({
-                mensaje: 'Autenticación correcta',
-                token: token
-            });
-        } else {
-            res.json({ mensaje: "Usuario o contraseña incorrectos" })
-        }
-    })
 }
-const rutasProtegidas = express.Router();
-rutasProtegidas.use((req, res, next) => {
-    const token = req.headers['access-token'];
-
-    if (token) {
-        jwt.verify(token, app.get('llave'), (err, decoded) => {
-            if (err) {
-                return res.json({ mensaje: 'Token inválida' });
-            } else {
-                req.decoded = decoded;
-                next();
-            }
-        });
-    } else {
-        res.send({
-            mensaje: 'Token no proveída.'
-        });
-    }
-});
 
 
 module.exports = {
